@@ -15,7 +15,7 @@ notebook
 boto3
 mypy-boto3-s3
 python-box==6.0.2
-fastapi==0.78.1
-uvicorn==0.17.6
+fastapi==0.95.2
+uvicorn==0.22.0
 Jinja2==3.1.2
--e .
+ensure
