@@ -12,7 +12,7 @@ class DataTransformation:
 
     def convert_examples_to_features(self, example_batch):
         inputs = self.tokenizer(
-            example_batch['text'],
+            example_batch['dialogue'],
             max_length=512,
             padding='max_length',
             truncation=True
