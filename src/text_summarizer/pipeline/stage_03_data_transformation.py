@@ -1,17 +1,20 @@
-from text_summarizer.config.configuration import ConfigurationManager
 from text_summarizer.components.data_transformation import DataTransformation
-
+from text_summarizer.config.configuration import ConfigurationManager
+from text_summarizer.logging import logger
 
 class DataTransformationTrainingPipeline:
     def __init__(self):
-        self.config_manager = ConfigurationManager()
-        self.data_transformation_config = self.config_manager.get_data_transformation_config()
+        pass
 
     def initiate_data_transformation(self):
-        """
-        This method runs the data validation process.
-        """
-        data_transformation = DataTransformation(config=self.data_transformation_config)
-        data_transformation.convert()
-        
-        
+        try:
+            config = ConfigurationManager()
+            data_transformation_config = config.get_data_transformation_config()
+
+            data_transformation = DataTransformation(config=data_transformation_config)
+            data_transformation.convert()
+
+            logger.info("Data Transformation completed successfully.")
+
+        except Exception as e:
+            raise e

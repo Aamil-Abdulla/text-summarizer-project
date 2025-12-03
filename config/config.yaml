@@ -1,21 +1,36 @@
-artifacts_root: artifacts 
+artifacts_root: artifacts
+
 data_ingestion:
   root_dir: artifacts/data_ingestion
   source_URL: https://github.com/Aamil-Abdulla/text-summarizer-project-zip/raw/refs/heads/main/samsumdata.zip
   local_data_file: artifacts/data_ingestion/data.zip
   unzip_dir: artifacts/data_ingestion
-  
+
 data_validation:
   root_dir: artifacts/data_validation
-  STATUS_FILE: artifacts/data_validation/status.txt
+  status_file: artifacts/data_validation/status.json
   ALL_REQUIRED_FILES:
-    - samsum_dataset/train
-    - samsum_dataset/validation
-    - samsum_dataset/test
-
-
+    - samsum-train.csv
+    - samsum-validation.csv
+    - samsum-test.csv
 
 data_transformation:
   root_dir: artifacts/data_transformation
-  data_path: artifacts/data_ingestion/samsum_dataset #it will save here
-  tokenizer_name: google/pegasus-cnn_dailymail
+  train_path: artifacts/data_ingestion/samsum-train.csv
+  validation_path: artifacts/data_ingestion/samsum-validation.csv
+  test_path: artifacts/data_ingestion/samsum-test.csv
+  tokenizer_name: t5-small
+
+model_trainer:
+  root_dir: artifacts/model_trainer
+  data_path: artifacts/data_transformation
+  model_ckpt: t5-small
+  logging_dir: artifacts/model_trainer/logs
+  logging_steps: 10
+  evaluation_strategy: "steps"
+  save_strategy: "epoch"
+  save_total_limit: 2
+  fp16: false
+  push_to_hub: false
+  hub_model_id: ""
+  hub_token: ""

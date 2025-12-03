@@ -11,10 +11,13 @@ class DataValidation:
         try:
             logger.info("Starting data validation for all required files.")
 
-            ingestion_dir = "artifacts/data_ingestion"
+            # Use the correct ingestion directory from CONFIG
+            ingestion_dir = "data_ingestion"
+
             all_files_present = True
             missing_files = []
 
+            # Check all required files
             for file_name in self.config.ALL_REQUIRED_FILES:
                 file_path = os.path.join(ingestion_dir, file_name)
 
@@ -24,11 +27,11 @@ class DataValidation:
                     missing_files.append(file_name)
                 else:
                     logger.info(f"Required file found: {file_path}")
-                    
+
+            # Ensure status file directory exists
             os.makedirs(os.path.dirname(self.config.STATUS_FILE), exist_ok=True)
 
-
-            # WRITE STATUS.TXT  
+            # Write validation status
             with open(self.config.STATUS_FILE, "w") as f:
                 if all_files_present:
                     f.write("Validation Status: Success — All required files exist.\n")
@@ -44,4 +47,3 @@ class DataValidation:
         except Exception as e:
             logger.exception(f"An error occurred during data validation: {e}")
             raise e
-            logger.info("Data validation completed.")

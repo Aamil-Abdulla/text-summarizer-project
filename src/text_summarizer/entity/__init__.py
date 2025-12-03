@@ -17,8 +17,21 @@ class DataValidationConfig:
 
 
 
+
 @dataclass(frozen=True)
 class DataTransformationConfig:
     root_dir: Path
-    data_path: Path
+    train_path: Path
+    validation_path: Path
+    test_path: Path
     tokenizer_name: str
+
+
+from dataclasses import dataclass
+from pathlib import Path
+
+@dataclass
+class ModelTrainerConfig:
+    root_dir: Path
+    data_path: Path
+    model_ckpt: str

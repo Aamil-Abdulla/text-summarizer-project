@@ -1,7 +1,13 @@
 from text_summarizer.constants import *
 from text_summarizer.utils.common import read_yaml, create_directories
-from text_summarizer.entity import (DataIngestionConfig)
-from text_summarizer.entity import (DataValidationConfig, DataTransformationConfig)
+from text_summarizer.entity import (
+    DataIngestionConfig,
+    DataValidationConfig,
+    DataTransformationConfig,
+    ModelTrainerConfig
+)
+from pathlib import Path
+
 
 class ConfigurationManager:
     def __init__(self, config_filepath=CONFIG_FILE_PATH, params_filepath=PARAMS_FILE_PATH):
@@ -10,55 +16,49 @@ class ConfigurationManager:
 
         create_directories([self.config.artifacts_root])
 
+    # -------------------- DATA INGESTION --------------------
     def get_data_ingestion_config(self) -> DataIngestionConfig:
         config = self.config.data_ingestion
 
         create_directories([Path(config.root_dir)])
 
-        data_ingestion_config = DataIngestionConfig(
+        return DataIngestionConfig(
             root_dir=Path(config.root_dir),
             source_URL=config.source_URL,
             local_data_file=Path(config.local_data_file),
             unzip_dir=Path(config.unzip_dir)
         )
 
-        return data_ingestion_config
-    
+    # -------------------- DATA VALIDATION --------------------
     def get_data_validation_config(self) -> DataValidationConfig:
         config = self.config.data_validation
 
-        data_validation_config = DataValidationConfig(
+        return DataValidationConfig(
             root_dir=Path(config.root_dir),
-            STATUS_FILE = config.STATUS_FILE,
-            ALL_REQUIRED_FILES = config.ALL_REQUIRED_FILES
+            STATUS_FILE=Path(config.status_file),
+            ALL_REQUIRED_FILES=config.ALL_REQUIRED_FILES
         )
 
-        return data_validation_config
-    
-    def get_data_ingestion_config(self) -> DataIngestionConfig:
-        config = self.config.data_ingestion
-
-        create_directories([Path(config.root_dir)])
-
-        data_ingestion_config = DataIngestionConfig(
-            root_dir=Path(config.root_dir),
-            source_URL=config.source_URL,
-            local_data_file=Path(config.local_data_file),
-            unzip_dir=Path(config.unzip_dir)
-        )
-
-        return data_ingestion_config
-    
-    
+    # -------------------- DATA TRANSFORMATION --------------------
     def get_data_transformation_config(self) -> DataTransformationConfig:
         config = self.config.data_transformation
 
-        create_directories([config.root_dir])
-        
-        data_transformation_config = DataTransformationConfig(
+        return DataTransformationConfig(
             root_dir=Path(config.root_dir),
-             data_path=Path(config.data_path),
+            train_path=Path(config.train_path),
+            validation_path=Path(config.validation_path),
+            test_path=Path(config.test_path),
             tokenizer_name=config.tokenizer_name
         )
-        return data_transformation_config
- 
+
+    # -------------------- MODEL TRAINER --------------------
+    def get_model_trainer_config(self) -> ModelTrainerConfig:
+        config = self.config.model_trainer
+
+        create_directories([Path(config.root_dir)])
+
+        return ModelTrainerConfig(
+            root_dir=Path(config.root_dir),
+            data_path=Path(config.data_path),
+            model_ckpt=config.model_ckpt
+        )

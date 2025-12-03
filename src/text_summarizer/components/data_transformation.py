@@ -1,43 +1,57 @@
-import os
-from  transformers import AutoTokenizer
+from datasets import load_dataset
+from transformers import AutoTokenizer
+from datasets import load_from_disk
 from text_summarizer.logging import logger
-from datasets import load_dataset, load_from_disk
-from text_summarizer.entity import DataTransformationConfig
-
 
 class DataTransformation:
-    def __init__(self, config: DataTransformationConfig):
+    def __init__(self, config):
         self.config = config
-        self.tokenizer = AutoTokenizer.from_pretrained(self.config.tokenizer_name)
+        # Use t5-small or t5-mini for CPU
+        self.tokenizer = AutoTokenizer.from_pretrained("t5-small")
 
     def convert_examples_to_features(self, example_batch):
-        inputs = self.tokenizer(
-            example_batch['dialogue'],
-            max_length=512,
-            padding='max_length',
-            truncation=True
-        )
-        with self.tokenizer.as_target_tokenizer():
-            target_encodings = self.tokenizer(
-                example_batch['summary'],
-                max_length=150,
-                padding='max_length',
-                truncation=True
-            )
-        return {
-            'input_ids': inputs['input_ids'],
-            'attention_mask': inputs['attention_mask'],
-            'labels': target_encodings['input_ids']
-        }
-    
-    def convert(self):
-        dataset_samsum = load_from_disk(self.config.data_path)
-        logger.info(f"Loaded dataset from {self.config.data_path}")
-        dataset_samsum_pt= dataset_samsum.map(
-            self.convert_examples_to_features,
-            batched=True
-        )
-    
-        dataset_samsum_pt.save_to_disk(os.path.join(self.config.root_dir, "samsum_dataset"))
+        dialogues = [str(x) for x in example_batch['dialogue']]
+        summaries = [str(x) for x in example_batch['summary']]
 
-        
+        inputs = self.tokenizer(
+            dialogues,
+            max_length=256,  # shorter for CPU
+            truncation=True,
+            padding='max_length'
+        )
+
+        # For labels, HF v5+ use text_target
+        labels = self.tokenizer(
+            summaries,
+            max_length=64,  # shorter for CPU
+            truncation=True,
+            padding='max_length',
+            text_target=summaries
+        )
+
+        inputs["labels"] = labels["input_ids"]
+        return inputs
+
+    def convert(self):
+        logger.info(f"Loading raw dataset from: {self.config.train_path.parent}")
+        dataset = load_dataset(
+            "csv",
+            data_files={
+                "train": str(self.config.train_path),
+                "validation": str(self.config.validation_path),
+                "test": str(self.config.test_path)
+            }
+        )
+
+        logger.info("Tokenizing dataset...")
+        # Use num_proc to speed up tokenization
+        tokenized_dataset = dataset.map(
+            self.convert_examples_to_features,
+            batched=True,
+            num_proc=4,  # parallel CPU cores
+            remove_columns=["dialogue", "summary"]
+        )
+
+        logger.info("Saving tokenized dataset...")
+        tokenized_dataset.save_to_disk(self.config.root_dir)
+        logger.info(f"Tokenized dataset saved at {self.config.root_dir}")
