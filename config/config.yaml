@@ -34,3 +34,14 @@ model_trainer:
   push_to_hub: false
   hub_model_id: ""
   hub_token: ""
+
+
+
+model_evaluation:
+  root_dir: artifacts/model_evaluation
+  model_path: artifacts/model_trainer/t5-summarizer
+  tokenizer_path: artifacts/model_trainer/tokenizer
+  data_path: artifacts/data_ingestion/samsum-test.csv
+  metric_file_name: artifacts/model_evaluation/metric.csv
+  column_text: dialogue
+  column_summary: summary

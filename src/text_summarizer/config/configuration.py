@@ -4,7 +4,8 @@ from text_summarizer.entity import (
     DataIngestionConfig,
     DataValidationConfig,
     DataTransformationConfig,
-    ModelTrainerConfig
+    ModelTrainerConfig,
+    ModelEvaluationConfig
 )
 from pathlib import Path
 
@@ -61,4 +62,18 @@ class ConfigurationManager:
             root_dir=Path(config.root_dir),
             data_path=Path(config.data_path),
             model_ckpt=config.model_ckpt
+        )
+
+    # -------------------- MODEL EVALUATION --------------------
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        config = self.config.model_evaluation   # <-- FIXED
+
+        return ModelEvaluationConfig(
+            root_dir=Path(config.root_dir),
+            model_path=Path(config.model_path),
+            tokenizer_path=Path(config.tokenizer_path),
+            data_path=Path(config.data_path),
+            metric_file_name=Path(config.metric_file_name),
+            column_text=getattr(config, "column_text", "article"),
+            column_summary=getattr(config, "column_summary", "highlights")
         )

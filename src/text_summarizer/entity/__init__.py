@@ -35,3 +35,14 @@ class ModelTrainerConfig:
     root_dir: Path
     data_path: Path
     model_ckpt: str
+
+
+@dataclass
+class ModelEvaluationConfig:
+    root_dir: Path
+    model_path: Path
+    tokenizer_path: Path
+    data_path: Path
+    metric_file_name: Path
+    column_text: str = "article"
+    column_summary: str = "highlights"
