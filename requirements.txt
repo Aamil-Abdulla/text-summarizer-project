@@ -1,21 +1,16 @@
+# Model + tokenization
 transformers
 transformers[sentencepiece]
 torch
-matplotlib
-numpy
-datasets
-sacrebleu
-rouge_score
-pandas
-py7zr
-pyYAML
+
+# Utilities
 nltk
 tqdm
-notebook
-boto3
-mypy-boto3-s3
+pyYAML
 python-box==6.0.2
+ensure
+
+# API
 fastapi==0.95.2
 uvicorn==0.22.0
 Jinja2==3.1.2
-ensure
