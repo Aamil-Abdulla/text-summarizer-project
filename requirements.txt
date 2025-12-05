@@ -1,17 +1,13 @@
-# Model + tokenization
+transformers
 transformers[sentencepiece]
-torch==2.0.1
+torch
 datasets
-
-# Utilities
 nltk
 tqdm
 pyYAML
 python-box==6.0.2
-pandas
-numpy
+ensure
 
-# API
 fastapi==0.95.2
 uvicorn==0.22.0
 Jinja2==3.1.2
