@@ -1,19 +1,19 @@
-# Use Python 3.11 slim
 FROM python:3.11-slim
 
-# Set working directory
 WORKDIR /app
 
-# Copy requirements and install
+# Copy requirements first for caching
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip
+
+# Install dependencies
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project
+# Copy all project files
 COPY . .
 
-# Expose the port (Render sets $PORT)
-EXPOSE $PORT
+# Expose the port
+EXPOSE 8080
 
-# Start the app using uvicorn
-CMD ["python", "app.py"]
+# Run the FastAPI app
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
