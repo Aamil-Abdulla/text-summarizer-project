@@ -1,21 +1,19 @@
-# Use official Python slim image
+# Use Python 3.11 slim
 FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first for caching
+# Copy requirements and install
 COPY requirements.txt .
-
-# Install dependencies
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
+# Copy the rest of the project
 COPY . .
 
-# Expose port
-EXPOSE 8080
+# Expose the port (Render sets $PORT)
+EXPOSE $PORT
 
-# Start the app
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+# Start the app using uvicorn
+CMD ["python", "app.py"]
