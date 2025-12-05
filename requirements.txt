@@ -2,7 +2,7 @@
 transformers
 transformers[sentencepiece]
 torch
-
+datasets
 # Utilities
 nltk
 tqdm
