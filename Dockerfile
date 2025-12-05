@@ -11,6 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all project files
 COPY . .
+# Copy artifacts folder
+COPY artifacts ./artifacts
 
 # Expose the port
 EXPOSE 8080
