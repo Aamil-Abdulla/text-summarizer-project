@@ -42,6 +42,9 @@ async def predict_text(request: TextRequest):
         return Response(f"Error Occurred during prediction: {e}")
 
 # ---------------------- Run the server ----------------------
+import os
+import uvicorn
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))  # Render provides this
-    uvicorn.run("app:app", host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 8080))  # fallback to 8080 locally
+    uvicorn.run(app, host="0.0.0.0", port=port)
