@@ -1,8 +1,13 @@
+# app.py
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse, Response
 from pydantic import BaseModel
 import uvicorn
 import os
+import sys
+
+# Ensure Python can find your package on Render
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from text_summarizer.pipeline.prediction import PredictionPipeline
 from text_summarizer.pipeline.stage_04_model_trainer import ModelTrainerTrainingPipeline
@@ -42,9 +47,6 @@ async def predict_text(request: TextRequest):
         return Response(f"Error Occurred during prediction: {e}")
 
 # ---------------------- Run the server ----------------------
-import os
-import uvicorn
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))  # fallback to 8080 locally
     uvicorn.run(app, host="0.0.0.0", port=port)
