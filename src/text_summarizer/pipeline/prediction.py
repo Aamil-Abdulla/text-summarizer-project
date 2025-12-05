@@ -3,13 +3,13 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 class PredictionPipeline:
     def __init__(self):
-        # project root = directory containing 'src'
+        # project root = folder containing app.py
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 
         model_dir = os.path.join(project_root, "artifacts/model_trainer/t5-summarizer")
         tokenizer_dir = os.path.join(project_root, "artifacts/model_trainer/tokenizer")
 
-        # Load tokenizer + model from local folders
+        # Load tokenizer and model from local saved folders
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir, local_files_only=True)
         self.model = AutoModelForSeq2SeqLM.from_pretrained(model_dir, local_files_only=True)
 
@@ -31,5 +31,4 @@ class PredictionPipeline:
             do_sample=False
         )
 
-        summary = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        return summary
+        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
